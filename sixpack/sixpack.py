@@ -1,0 +1,75 @@
+import json
+import re
+from uuid import uuid4
+import requests
+
+SIXPACK_HOST = 'http://localhost'
+SIXPACK_PORT = 5000
+VALID_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
+
+def simple_participate(experiment_name, alternatives, client_id=None, force=None):
+    session = Session(client_id)
+    ret = session.participate(experiment_name, alternatives, force)
+    return json.loads(ret.content)
+
+def simple_convert(experiment_name, client_id):
+    session = Session(client_id)
+    ret = session.convert(experiment_name)
+    return json.loads(ret.content)
+
+def generate_client_id():
+    return uuid4()
+
+class Session(object):
+
+    def __init__(self, client_id=None, options={}):
+        default_options = {
+            'host': SIXPACK_HOST,
+            'port': SIXPACK_PORT
+        }
+
+        options = dict(default_options.items() + options.items())
+        self.host = options['host']
+        self.port = options['port']
+
+        if client_id is None:
+            self.client_id = generate_client_id()
+        else:
+            self.client_id = client_id
+
+    def participate(self, experiment_name, alternatives, force=None):
+        if VALID_NAME_RE.match(experiment_name) is None:
+            raise ValueError('Bad experiment name')
+
+        if len(alternatives) < 2:
+            raise ValueError('Must specify at least 2 alternatives')
+
+        for alternative in alternatives:
+            if VALID_NAME_RE.match(alternative) is None:
+                raise ValueError('Bad alternative name: {0}'.format(alternative))
+
+        params = {
+            'client_id': self.client_id,
+            'experiment': experiment_name,
+            'alternatives': alternatives
+        }
+
+        if force != None and force in alternatives:
+            params['force'] = force
+
+        return self.get_response('/participate', params)
+
+    def convert(self, experiment_name):
+        if VALID_NAME_RE.match(experiment_name) is None:
+            raise ValueError('Bad experiment name')
+
+        params = {
+            'experiment': experiment_name,
+            'client_id': self.client_id
+        }
+
+        self.get_response('/convert', params)
+
+    def get_response(self, endpoint=None, params=None):
+        url = "{0}:{1}{2}".format(self.host, self.port, endpoint)
+        return requests.get(url, params=params)
