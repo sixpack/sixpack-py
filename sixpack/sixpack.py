@@ -11,13 +11,13 @@ VALID_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
 def simple_participate(experiment_name, alts, client_id=None, force=None):
     session = Session(client_id)
     ret = session.participate(experiment_name, alts, force)
-    return json.loads(ret.content)
+    return ret['alternative']
 
 
 def simple_convert(experiment_name, client_id):
     session = Session(client_id)
     ret = session.convert(experiment_name)
-    return json.loads(ret.content)
+    return ret['status']
 
 
 def generate_client_id():
@@ -72,8 +72,13 @@ class Session(object):
             'client_id': self.client_id
         }
 
-        self.get_response('/convert', params)
+        return self.get_response('/convert', params)
 
     def get_response(self, endpoint=None, params=None):
         url = "{0}:{1}{2}".format(self.host, self.port, endpoint)
-        return requests.get(url, params=params)
+        response = requests.get(url, params=params)
+        if response.status_code != 200:
+            ret = "{'status': 'failed', 'response': response.content}"
+        else:
+            ret = response.content
+        return json.loads(ret)
