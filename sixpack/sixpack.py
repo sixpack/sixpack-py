@@ -7,18 +7,22 @@ SIXPACK_HOST = 'http://localhost'
 SIXPACK_PORT = 5000
 VALID_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
 
-def simple_participate(experiment_name, alternatives, client_id=None, force=None):
+
+def simple_participate(experiment_name, alts, client_id=None, force=None):
     session = Session(client_id)
-    ret = session.participate(experiment_name, alternatives, force)
+    ret = session.participate(experiment_name, alts, force)
     return json.loads(ret.content)
+
 
 def simple_convert(experiment_name, client_id):
     session = Session(client_id)
     ret = session.convert(experiment_name)
     return json.loads(ret.content)
 
+
 def generate_client_id():
     return uuid4()
+
 
 class Session(object):
 
@@ -44,9 +48,9 @@ class Session(object):
         if len(alternatives) < 2:
             raise ValueError('Must specify at least 2 alternatives')
 
-        for alternative in alternatives:
-            if VALID_NAME_RE.match(alternative) is None:
-                raise ValueError('Bad alternative name: {0}'.format(alternative))
+        for alt in alternatives:
+            if VALID_NAME_RE.match(alt) is None:
+                raise ValueError('Bad alternative name: {0}'.format(alt))
 
         params = {
             'client_id': self.client_id,
@@ -54,7 +58,7 @@ class Session(object):
             'alternatives': alternatives
         }
 
-        if force != None and force in alternatives:
+        if force is not None and force in alternatives:
             params['force'] = force
 
         return self.get_response('/participate', params)
