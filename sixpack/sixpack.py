@@ -1,7 +1,7 @@
 import json
 import re
-from uuid import uuid4
 import requests
+from uuid import uuid4
 
 SIXPACK_HOST = 'http://localhost'
 SIXPACK_PORT = 5000
