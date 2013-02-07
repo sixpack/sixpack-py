@@ -6,6 +6,23 @@ class TestSixpackClent(unittest.TestCase):
 
     unit = True
 
+    def test_not_passing_params_to_session(self):
+        session = sixpack.Session('kitz')
+        self.assertIsNone(session.ip_address)
+        self.assertIsNone(session.user_agent)
+
+    def test_passing_params_session(self):
+        session = sixpack.Session('zack', params={'ip_address': '51.70.135.20'})
+        self.assertEqual(session.ip_address, '51.70.135.20')
+
+        params = {
+            'ip_address': '51.70.155.11',
+            'user_agent': 'FireChromari'
+        }
+        session = sixpack.Session('hunting', params=params)
+        self.assertEqual(session.ip_address, '51.70.155.11')
+        self.assertEqual(session.user_agent, 'FireChromari')
+
     def test_simple_participate(self):
         alternative = sixpack.simple_participate('exp-n', ['trolled', 'not-trolled'], 'zack')
         self.assertIn(alternative, ['trolled', 'not-trolled'])
