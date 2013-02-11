@@ -8,3 +8,7 @@ dist/
 *.gz
 build/
 env/
+*~
+*#*
+*.swp
+pkg
