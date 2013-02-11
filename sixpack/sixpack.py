@@ -70,7 +70,10 @@ class Session(object):
         if force is not None and force in alternatives:
             params['force'] = force
 
-        return self.get_response('/participate', params)
+        response = self.get_response('/participate', params)
+        if response['status'] == 'failed':
+            response['alternative'] = alternatives[0]
+        return response
 
     def convert(self, experiment_name):
         if VALID_NAME_RE.match(experiment_name) is None:
@@ -98,9 +101,14 @@ class Session(object):
         if params is not None:
             params = self.build_params(params)
 
-        response = requests.get(url, params=params)
-        if response.status_code != 200:
-            ret = "{'status': 'failed', 'response': {0}}".format(response.content)
-        else:
-            ret = response.content
+        # set a 250ms timeout
+        try:
+            response = requests.get(url, params=params, timeout=0.25)
+            if response.status_code != 200:
+                ret = "{\"status\": \"failed\", \"response\": {0}}".format(response.content)
+            else:
+                ret = response.content
+        except:
+                ret = "{\"status\": \"failed\", \"response\": \"http error\"}"
+
         return json.loads(ret)
