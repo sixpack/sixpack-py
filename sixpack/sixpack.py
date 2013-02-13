@@ -3,7 +3,7 @@ import re
 import requests
 from uuid import uuid4
 
-SIXPACK_HOST = 'http://localhost:5000'
+BASE_URL = 'http://localhost:5000'
 VALID_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
 
 
@@ -27,7 +27,7 @@ class Session(object):
 
     def __init__(self, client_id=None, options={}, params={}):
         default_options = {
-            'host': SIXPACK_HOST
+            'base_url': BASE_URL
         }
 
         default_params = {
@@ -36,7 +36,7 @@ class Session(object):
         }
 
         options = dict(default_options.items() + options.items())
-        self.host = options['host']
+        self.base_url = options['base_url']
 
         params = dict(default_params.items() + params.items())
         self.user_agent = params['user_agent']
@@ -93,7 +93,7 @@ class Session(object):
         return params
 
     def get_response(self, endpoint=None, params=None):
-        url = "{0}{1}".format(self.host, endpoint)
+        url = "{0}{1}".format(self.base_url, endpoint)
 
         if params is not None:
             params = self.build_params(params)
