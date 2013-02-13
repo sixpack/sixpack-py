@@ -11,7 +11,7 @@ VALID_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
 def simple_participate(experiment_name, alts, client_id=None, force=None, params={}):
     session = Session(client_id, params=params)
     ret = session.participate(experiment_name, alts, force)
-    return ret['alternative']
+    return ret['alternative']['name']
 
 
 def simple_convert(experiment_name, client_id, params={}):
@@ -72,7 +72,7 @@ class Session(object):
 
         response = self.get_response('/participate', params)
         if response['status'] == 'failed':
-            response['alternative'] = alternatives[0]
+            response['alternative'] = {'name': alternatives[0]}
         return response
 
     def convert(self, experiment_name):
