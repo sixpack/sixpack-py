@@ -44,17 +44,14 @@ class TestSixpackClent(unittest.TestCase):
         self.assertEqual(ret2, 'ok')
 
     def test_settings_to_constructor(self):
-        self.assertEqual(sixpack.SIXPACK_HOST, 'http://localhost')
-        self.assertEqual(sixpack.SIXPACK_PORT, 5000)
+        self.assertEqual(sixpack.SIXPACK_HOST, 'http://localhost:5000')
 
         session = sixpack.Session()
-        self.assertEqual(session.host, 'http://localhost')
-        self.assertEqual(session.port, 5000)
+        self.assertEqual(session.host, 'http://localhost:5000')
 
-        params = {'host': 'sixpack-ec2-01', 'port': 8911}
+        params = {'host': 'http://sixpack-ec2-01:8911'}
         session = sixpack.Session(options = params)
-        self.assertEqual(session.host, 'sixpack-ec2-01')
-        self.assertEqual(session.port, 8911)
+        self.assertEqual(session.host, 'http://sixpack-ec2-01:8911')
 
     def test_client_id_on_constructor(self):
         session = sixpack.Session('zack111')
