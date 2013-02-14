@@ -6,11 +6,12 @@ Python client library for SeatGeak's Sixpack ab testing framework.
 Installation
 ------------
 
-First install in your virtual environment
+First install in your virtual environment::
 
-    pip install sixpack-client
+    $ pip install sixpack-client
 
-## Usage
+Usage
+-----
 
 Basic example::
 
@@ -46,7 +47,8 @@ If you already have a client_id (you can generate one using `sixpack.generate_cl
     simple_convert("new-test", client_id)
 
 
-## Contributing
+Contributing
+------------
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
