@@ -4,6 +4,7 @@ import requests
 from uuid import uuid4
 
 SIXPACK_HOST = 'http://localhost:5000'
+SIXPACK_TIMEOUT = 0.5
 VALID_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
 
 
@@ -27,16 +28,18 @@ class Session(object):
 
     def __init__(self, client_id=None, options={}, params={}):
         default_options = {
-            'host': SIXPACK_HOST
+            'host': SIXPACK_HOST,
+            'timeout': SIXPACK_TIMEOUT
         }
 
         default_params = {
             'user_agent': None,
-            'ip_address': None
+            'ip_address': None,
         }
 
         options = dict(default_options.items() + options.items())
         self.host = options['host']
+        self.timeout = options['timeout']
 
         params = dict(default_params.items() + params.items())
         self.user_agent = params['user_agent']
@@ -98,9 +101,8 @@ class Session(object):
         if params is not None:
             params = self.build_params(params)
 
-        # set a 250ms timeout
         try:
-            response = requests.get(url, params=params, timeout=0.25)
+            response = requests.get(url, params=params, timeout=self.timeout)
             if response.status_code != 200:
                 ret = "{\"status\": \"failed\", \"response\": {0}}".format(response.content)
             else:
