@@ -24,21 +24,21 @@ class TestSixpackClent(unittest.TestCase):
         self.assertEqual(session.user_agent, 'FireChromari')
 
     def test_simple_participate(self):
-        alternative = sixpack.simple_participate('exp-n', ['trolled', 'not-trolled'], 'zack')
+        alternative = sixpack.participate('exp-n', ['trolled', 'not-trolled'], 'zack')
         self.assertIn(alternative, ['trolled', 'not-trolled'])
 
     def test_simple_convert(self):
-        status = sixpack.simple_convert('exp-n', 'zack')
+        status = sixpack.convert('exp-n', 'zack')
         self.assertEqual(status, 'ok')
 
     def test_generate_uuid(self):
-        alternative = sixpack.simple_participate('exp-n', ['trolled', 'not-trolled'])
+        alternative = sixpack.participate('exp-n', ['trolled', 'not-trolled'])
         self.assertIn(alternative, ['trolled', 'not-trolled'])
 
     def test_should_return_ok_for_multiple_tests(self):
-        sixpack.simple_participate('ok-ok', ['water', 'oil'], 'zack')
-        ret1 = sixpack.simple_convert('ok-ok', 'zack')
-        ret2 = sixpack.simple_convert('ok-ok', 'zack')
+        sixpack.participate('ok-ok', ['water', 'oil'], 'zack')
+        ret1 = sixpack.convert('ok-ok', 'zack')
+        ret2 = sixpack.convert('ok-ok', 'zack')
 
         self.assertEqual(ret1, 'ok')
         self.assertEqual(ret2, 'ok')

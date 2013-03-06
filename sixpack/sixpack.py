@@ -3,17 +3,17 @@ import re
 import requests
 from uuid import uuid4
 
-BASE_URL = 'http://localhost:5000'
+SIXPACK_HOST = 'http://localhost:5000'
 VALID_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
 
 
-def simple_participate(experiment_name, alts, client_id=None, force=None, params={}):
+def participate(experiment_name, alts, client_id=None, force=None, params={}):
     session = Session(client_id, params=params)
     ret = session.participate(experiment_name, alts, force)
     return ret['alternative']['name']
 
 
-def simple_convert(experiment_name, client_id, params={}):
+def convert(experiment_name, client_id, params={}):
     session = Session(client_id, params=params)
     ret = session.convert(experiment_name)
     return ret['status']
@@ -27,7 +27,7 @@ class Session(object):
 
     def __init__(self, client_id=None, options={}, params={}):
         default_options = {
-            'base_url': BASE_URL
+            'host': SIXPACK_HOST
         }
 
         default_params = {
@@ -36,7 +36,7 @@ class Session(object):
         }
 
         options = dict(default_options.items() + options.items())
-        self.base_url = options['base_url']
+        self.host = options['host']
 
         params = dict(default_params.items() + params.items())
         self.user_agent = params['user_agent']
@@ -93,7 +93,7 @@ class Session(object):
         return params
 
     def get_response(self, endpoint=None, params=None):
-        url = "{0}{1}".format(self.base_url, endpoint)
+        url = "{0}{1}".format(self.host, endpoint)
 
         if params is not None:
             params = self.build_params(params)
