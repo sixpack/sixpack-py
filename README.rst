@@ -38,13 +38,13 @@ For future requests, create the `Session` using the `client_id` stored in the co
     session = Session(client_id=client_id)
     session.convert("new-test")
 
-If you already have a client_id (you can generate one using `sixpack.generate_client_id()`) you can use the `simple_participate()` and `simple_convert()` methods to avoid instantiating a `Session`::
+If you already have a client_id (you can generate one using `sixpack.generate_client_id()`) you can use the `participate()` and `convert()` methods to avoid instantiating a `Session` yourself. This can help to clean up your logic a bit::
 
-    from sixpack.sixpack import simple_participate, simple_convert
+    from sixpack.sixpack import participate, convert
 
-    simple_partipate("new-test", ["alternative-1", "alternative-2"], client_id)
+    partipate("new-test", ["alternative-1", "alternative-2"], client_id)
 
-    simple_convert("new-test", client_id)
+    convert("new-test", client_id)
 
 
 Contributing
