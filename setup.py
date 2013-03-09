@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from sixpack import __version__
+from sixpack_client import __version__
 
 try:
     from setuptools import setup
@@ -12,7 +12,7 @@ setup(
     version=__version__,
     author='SeatGeek',
     author_email='hi@seatgeek.com',
-    packages=['sixpack', 'sixpack.test'],
+    packages=['sixpack_client', 'sixpack_client.test'],
     url='http://github.com/seatgeek/sixpack-py',
     license=open('LICENSE.txt').read(),
     classifiers=[

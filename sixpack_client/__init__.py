@@ -7,6 +7,8 @@ SIXPACK_HOST = 'http://localhost:5000'
 SIXPACK_TIMEOUT = 0.5
 VALID_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
 
+__version__ = '0.1.2'
+
 
 def participate(experiment_name, alts, client_id=None, force=None, params={}):
     session = Session(client_id, params=params)
