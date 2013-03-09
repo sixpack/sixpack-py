@@ -1,6 +1,7 @@
 import json
 import re
 import requests
+import requests.exceptions
 from uuid import uuid4
 
 SIXPACK_HOST = 'http://localhost:5000'
@@ -106,10 +107,10 @@ class Session(object):
         try:
             response = requests.get(url, params=params, timeout=self.timeout)
             if response.status_code != 200:
-                ret = "{\"status\": \"failed\", \"response\": {0}}".format(response.content)
+                ret = json.dumps(dict(status="failed", response=response.content))
             else:
                 ret = response.content
-        except:
-                ret = "{\"status\": \"failed\", \"response\": \"http error\"}"
+        except requests.exceptions.RequestException:
+                ret = json.dumps(dict(status="failed", response="http error"))
 
         return json.loads(ret)
