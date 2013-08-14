@@ -1,7 +1,9 @@
 Sixpack
 =======
 
-Python client library for SeatGeak's Sixpack ab testing framework.
+Python client library for SeatGeak's Sixpack_ ab testing framework.
+
+.. _Sixpack: http://github.com/seatgeek/sixpack
 
 Installation
 ------------
