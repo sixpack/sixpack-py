@@ -30,9 +30,17 @@ Basic example::
 
 Each session has a `client_id` associated with it that must be preserved across requests. Here's what the first request might look like::
 
-    session = Session
-    session.participate("new-test", ["alternative-1", "alternative-2"])
+    session = Session()
+    resp = session.participate("new-test", ["alternative-1", "alternative-2"])
     set_cookie_in_your_web_framework("sixpack-id", session.client_id)
+
+
+You can then make decisions in your application based on resp['alternative']['name']::
+
+    session = Session()
+    resp = session.participate("new-test", ["alt-1", "alt-2"])
+    if resp["alternative"]["name"] == "alt-1":
+        set_variable_in_view("new-test-alternative", "alt-1")
 
 For future requests, create the `Session` using the `client_id` stored in the cookie::
 
@@ -40,13 +48,12 @@ For future requests, create the `Session` using the `client_id` stored in the co
     session = Session(client_id=client_id)
     session.convert("new-test")
 
-If you already have a client_id (you can generate one using `sixpack.generate_client_id()`) you can use the `participate()` and `convert()` methods to avoid instantiating a `Session` yourself. This can help to clean up your logic a bit::
+Sessions can take an optional `options` dictionary that takes `host` and `timeout` as keys. This allows you to customize Sixpack's location.::
 
-    from sixpack.sixpack import participate, convert
+    options = {'host': 'http://mysixpacklocation.com'}
+    session = Session(client_id="123", options=options)
 
-    partipate("new-test", ["alternative-1", "alternative-2"], client_id)
-
-    convert("new-test", client_id)
+If Sixpack is unreachable or other errors occur, sixpack-py will provide the control alternative.
 
 
 Contributing

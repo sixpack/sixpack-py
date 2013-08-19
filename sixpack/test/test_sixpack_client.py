@@ -23,25 +23,19 @@ class TestSixpackClent(unittest.TestCase):
         self.assertEqual(session.ip_address, '51.70.155.11')
         self.assertEqual(session.user_agent, 'FireChromari')
 
-    def test_simple_participate(self):
-        alternative = sixpack.participate('exp-n', ['trolled', 'not-trolled'], 'zack')
-        self.assertIn(alternative, ['trolled', 'not-trolled'])
-
-    def test_simple_convert(self):
-        status = sixpack.convert('exp-n', 'zack')
-        self.assertEqual(status, 'ok')
-
     def test_generate_uuid(self):
-        alternative = sixpack.participate('exp-n', ['trolled', 'not-trolled'])
-        self.assertIn(alternative, ['trolled', 'not-trolled'])
+        session = sixpack.Session('xxx')
+        resp = session.participate('exp-n', ['trolled', 'not-trolled'])
+        self.assertIn(resp['alternative']['name'], ['trolled', 'not-trolled'])
 
     def test_should_return_ok_for_multiple_tests(self):
-        sixpack.participate('ok-ok', ['water', 'oil'], 'zack')
-        ret1 = sixpack.convert('ok-ok', 'zack')
-        ret2 = sixpack.convert('ok-ok', 'zack')
+        session = sixpack.Session('runnerJose')
+        session.participate('ok-ok', ['water', 'oil'])
+        ret1 = session.convert('ok-ok')
+        ret2 = session.convert('ok-ok')
 
-        self.assertEqual(ret1, 'ok')
-        self.assertEqual(ret2, 'ok')
+        self.assertEqual(ret1['status'], 'ok')
+        self.assertEqual(ret2['status'], 'ok')
 
     def test_settings_to_constructor(self):
         self.assertEqual(sixpack.SIXPACK_HOST, 'http://localhost:5000')

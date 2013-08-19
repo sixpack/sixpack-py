@@ -8,18 +8,6 @@ SIXPACK_TIMEOUT = 0.5
 VALID_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
 
 
-def participate(experiment_name, alts, client_id=None, force=None, params={}):
-    session = Session(client_id, params=params)
-    ret = session.participate(experiment_name, alts, force)
-    return ret['alternative']['name']
-
-
-def convert(experiment_name, client_id, params={}):
-    session = Session(client_id, params=params)
-    ret = session.convert(experiment_name)
-    return ret['status']
-
-
 def generate_client_id():
     return uuid4()
 
@@ -108,6 +96,6 @@ class Session(object):
             else:
                 ret = response.content
         except:
-                ret = "{\"status\": \"failed\", \"response\": \"http error\"}"
+                ret = "{\"status\": \"failed\", \"response\": \"http error: sixpack is unreachable\"}"
 
         return json.loads(ret)
