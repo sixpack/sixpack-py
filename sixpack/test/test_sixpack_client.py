@@ -64,6 +64,17 @@ class TestSixpackClent(unittest.TestCase):
         with self.assertRaises(ValueError):
             session.convert('(((((')
 
+    def test_failure_on_bad_kpi_name_convert(self):
+        session = sixpack.Session('zack')
+        with self.assertRaises(ValueError):
+            session.convert('omenar', kpi='*******')
+
+    def test_should_return_ok_for_a_kpi(self):
+        session = sixpack.Session('runnerOsvaldo')
+        session.participate('with-kpi', ['water', 'oil'])
+        ret = session.convert('with-kpi', kpi='my-shiny-kpi')
+        self.assertEqual(ret['status'], 'ok')
+
     def test_failure_on_too_few_alts(self):
         session = sixpack.Session('zack')
         with self.assertRaises(ValueError):
