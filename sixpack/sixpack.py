@@ -63,7 +63,7 @@ class Session(object):
             response['alternative'] = {'name': alternatives[0]}
         return response
 
-    def convert(self, experiment_name):
+    def convert(self, experiment_name, kpi=None):
         if VALID_NAME_RE.match(experiment_name) is None:
             raise ValueError('Bad experiment name')
 
@@ -71,6 +71,11 @@ class Session(object):
             'experiment': experiment_name,
             'client_id': self.client_id
         }
+
+        if kpi:
+            if VALID_NAME_RE.match(kpi) is None:
+                raise ValueError('Bad KPI name: {0}'.format(kpi))
+            params['kpi'] = kpi
 
         return self.get_response('/convert', params)
 
