@@ -75,6 +75,17 @@ class TestSixpackClent(unittest.TestCase):
         ret = session.convert('with-kpi', kpi='my-shiny-kpi')
         self.assertEqual(ret['status'], 'ok')
 
+    def test_should_return_ok_for_a_traffic_dist(self):
+        session = sixpack.Session('supperUser')
+        session.participate('my-subset-experiment', ['water', 'oil'], traffic_dist=20)
+        ret = session.convert('my-subset-experiment')
+        self.assertEqual(ret['status'], 'ok')
+
+    def test_should_return_error_for_a_traffic_dist_off_the_charts(self):
+        session = sixpack.Session('runnerOsvaldo')
+        with self.assertRaises(ValueError):
+            session.participate('subset-experiment', ['water', 'oil'], traffic_dist=500)
+
     def test_failure_on_too_few_alts(self):
         session = sixpack.Session('zack')
         with self.assertRaises(ValueError):
