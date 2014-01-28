@@ -38,7 +38,7 @@ class Session(object):
         else:
             self.client_id = client_id
 
-    def participate(self, experiment_name, alternatives, force=None, traffic_dist=None):
+    def participate(self, experiment_name, alternatives, force=None, traffic_fraction=1):
         if VALID_NAME_RE.match(experiment_name) is None:
             raise ValueError('Bad experiment name')
 
@@ -58,10 +58,9 @@ class Session(object):
         if force is not None and force in alternatives:
             params['force'] = force
 
-        if traffic_dist is not None:
-            if int(traffic_dist) < 0 or int(traffic_dist) > 100:
-                raise ValueError('Bad traffic_dist specified (should be a number between 0 and 100')
-            params['traffic_dist'] = str(traffic_dist)
+        if float(traffic_fraction) < 0 or float(traffic_fraction) > 1:
+            raise ValueError('Bad traffic_fraction specified (should be a number between 0 and 1')
+        params['traffic_fraction'] = str(traffic_fraction)
 
         response = self.get_response('/participate', params)
         if response['status'] == 'failed':
