@@ -108,7 +108,7 @@ class Session(object):
                 ret = "{\"status\": \"failed\", \"response\": {0}}".format(response.content)
             else:
                 ret = response.content
-        except:
+        except Exception:
                 ret = "{\"status\": \"failed\", \"response\": \"http error: sixpack is unreachable\"}"
 
         return json.loads(ret)
