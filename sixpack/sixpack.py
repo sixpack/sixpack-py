@@ -14,24 +14,28 @@ def generate_client_id():
 
 class Session(object):
 
-    def __init__(self, client_id=None, options={}, params={}):
-        default_options = {
+    def __init__(self, client_id=None, options=None, params=None):
+        use_options = {
             'host': SIXPACK_HOST,
             'timeout': SIXPACK_TIMEOUT
         }
 
-        default_params = {
+        use_params = {
             'user_agent': None,
             'ip_address': None,
         }
 
-        options = dict(default_options.items() + options.items())
-        self.host = options['host']
-        self.timeout = options['timeout']
+        if options:
+            use_options.update(options)
 
-        params = dict(default_params.items() + params.items())
-        self.user_agent = params['user_agent']
-        self.ip_address = params['ip_address']
+        if params:
+            use_params.update(params)
+
+        self.host = use_options['host']
+        self.timeout = use_options['timeout']
+
+        self.user_agent = use_params['user_agent']
+        self.ip_address = use_params['ip_address']
 
         if client_id is None:
             self.client_id = generate_client_id()
