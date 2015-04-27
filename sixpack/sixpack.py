@@ -106,7 +106,7 @@ class Session(object):
         try:
             response = requests.get(url, params=params, timeout=self.timeout)
             if response.status_code != 200:
-                ret = "{\"status\": \"failed\", \"response\": {0}}".format(response.content)
+                ret = "{{\"status\": \"failed\", \"response\": {0}}}".format(response.content)
             else:
                 ret = response.content
         except Exception:
