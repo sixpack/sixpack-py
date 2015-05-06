@@ -42,7 +42,7 @@ class Session(object):
         else:
             self.client_id = client_id
 
-    def participate(self, experiment_name, alternatives, force=None, traffic_fraction=1, prefetch=False):
+    def participate(self, experiment_name, alternatives, force=None, traffic_fraction=1, prefetch=False, bucket=None):
         if VALID_NAME_RE.match(experiment_name) is None:
             raise ValueError('Bad experiment name')
 
@@ -59,6 +59,8 @@ class Session(object):
             'alternatives': alternatives,
             'prefetch': prefetch
         }
+        if bucket:
+            params['bucket'] = bucket
 
         if force is not None and force in alternatives:
             params['force'] = force
