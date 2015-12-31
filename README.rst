@@ -1,7 +1,7 @@
 Sixpack
 =======
 
-.. image: https://travis-ci.org/seatgeek/sixpack-py.svg
+.. image:: https://travis-ci.org/seatgeek/sixpack-py.svg
 
 Python client library for SeatGeak's Sixpack_ ab testing framework.
 
