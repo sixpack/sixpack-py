@@ -1,6 +1,8 @@
+from mock import patch, Mock
 import unittest
 
 from sixpack import sixpack
+
 
 class TestSixpackClent(unittest.TestCase):
 
@@ -30,9 +32,12 @@ class TestSixpackClent(unittest.TestCase):
 
     def test_should_return_ok_for_multiple_tests(self):
         session = sixpack.Session('runnerJose')
-        session.participate('ok-ok', ['water', 'oil'])
-        ret1 = session.convert('ok-ok')
-        ret2 = session.convert('ok-ok')
+        with patch('requests.get', new=new_participate):
+            session.participate('ok-ok', ['water', 'oil'])
+
+        with patch('requests.get', new=new_convert):
+            ret1 = session.convert('ok-ok')
+            ret2 = session.convert('ok-ok')
 
         self.assertEqual(ret1['status'], 'ok')
         self.assertEqual(ret2['status'], 'ok')
@@ -44,7 +49,7 @@ class TestSixpackClent(unittest.TestCase):
         self.assertEqual(session.host, 'http://localhost:5000')
 
         params = {'host': 'http://sixpack-ec2-01:8911'}
-        session = sixpack.Session(options = params)
+        session = sixpack.Session(options=params)
         self.assertEqual(session.host, 'http://sixpack-ec2-01:8911')
 
     def test_client_id_on_constructor(self):
@@ -71,15 +76,21 @@ class TestSixpackClent(unittest.TestCase):
 
     def test_should_return_ok_for_a_kpi(self):
         session = sixpack.Session('runnerOsvaldo')
-        session.participate('with-kpi', ['water', 'oil'])
-        ret = session.convert('with-kpi', kpi='my-shiny-kpi')
+
+        with patch('requests.get', new=new_participate):
+            session.participate('with-kpi', ['water', 'oil'])
+
+        with patch('requests.get', new=new_convert):
+            ret = session.convert('with-kpi', kpi='my-shiny-kpi')
+
         self.assertEqual(ret['status'], 'ok')
 
-    def test_should_return_ok_for_a_traffic_fraction(self):
-        session = sixpack.Session('supperUser')
-        session.participate('my-subset-experiment', ['water', 'oil'], traffic_fraction=0.2)
-        ret = session.convert('my-subset-experiment')
-        self.assertEqual(ret['status'], 'ok')
+    def test_should_return_failed_for_sixpack_unavailable(self):
+        session = sixpack.Session('runnerOsvaldo')
+
+        with patch('requests.get', new=sixpack_unavailable):
+            ret = session.participate('with-kpi', ['water', 'oil'])
+            self.assertEqual(ret['status'], 'failed')
 
     def test_should_return_error_for_a_traffic_fraction_off_the_charts(self):
         session = sixpack.Session('runnerOsvaldo')
@@ -95,3 +106,26 @@ class TestSixpackClent(unittest.TestCase):
         session = sixpack.Session('zack')
         with self.assertRaises(ValueError):
             session.participate('ipa', ['****', '1'])
+
+
+def new_convert(*args, **kwargs):
+    m = Mock()
+    m.status_code = 200
+    m.content = '{"status": "ok"}'
+    return m
+
+
+def new_participate(*args, **kwargs):
+    m = Mock()
+    m.status_code = 200
+    m.content = '{"status": "ok"}'
+
+    return m
+
+
+def sixpack_unavailable(*args, **kwargs):
+    m = Mock()
+    m.status_code = 500
+    m.content = '{"status": "failed"}'
+
+    return m
