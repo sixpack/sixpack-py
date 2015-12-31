@@ -12,3 +12,4 @@ env/
 *#*
 *.swp
 pkg
+.coverage

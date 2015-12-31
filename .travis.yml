@@ -1,0 +1,8 @@
+language: python
+python:
+  - "2.7"
+install: "pip install -r requirements.txt"
+before_script: "pip install nose-cov"
+script: nosetests --with-coverage --cover-package=sixpack
+sudo: false
+cache: pip
