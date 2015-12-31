@@ -106,10 +106,12 @@ class Session(object):
         try:
             response = requests.get(url, params=params, timeout=self.timeout)
             if response.status_code != 200:
-                ret = "{{\"status\": \"failed\", \"response\": {0}}}".format(response.content)
+                try:
+                    content = response.json()
+                except Exception:
+                    content = response.content
+                return {{"status": "failed", "response": content}}
             else:
-                ret = response.content
+                return response.json()
         except Exception:
-                ret = "{\"status\": \"failed\", \"response\": \"http error: sixpack is unreachable\"}"
-
-        return json.loads(ret)
+            return {"status": "failed", "response": "http error: sixpack is unreachable"}
