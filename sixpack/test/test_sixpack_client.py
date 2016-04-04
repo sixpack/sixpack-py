@@ -111,14 +111,15 @@ class TestSixpackClent(unittest.TestCase):
 def new_convert(*args, **kwargs):
     m = Mock()
     m.status_code = 200
-    m.content = '{"status": "ok"}'
+    m.json.return_value = {"status": "ok"}
+
     return m
 
 
 def new_participate(*args, **kwargs):
     m = Mock()
     m.status_code = 200
-    m.content = '{"status": "ok"}'
+    m.json.return_value = {"status": "ok"}
 
     return m
 
