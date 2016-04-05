@@ -1,4 +1,3 @@
-import json
 import re
 import requests
 from uuid import uuid4
@@ -105,11 +104,13 @@ class Session(object):
 
         try:
             response = requests.get(url, params=params, timeout=self.timeout)
-            if response.status_code != 200:
-                ret = "{{\"status\": \"failed\", \"response\": {0}}}".format(response.content)
-            else:
-                ret = response.content
         except Exception:
-                ret = "{\"status\": \"failed\", \"response\": \"http error: sixpack is unreachable\"}"
+            return {"status": "failed", "response": "http error: sixpack is unreachable"}
 
-        return json.loads(ret)
+        if response.status_code != 200:
+            return {"status": "failed", "response": response.content}
+
+        try:
+            return response.json()
+        except ValueError:
+            return {"status": "failed", "response": response.content}
