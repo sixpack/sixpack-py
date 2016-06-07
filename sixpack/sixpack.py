@@ -4,6 +4,12 @@ from uuid import uuid4
 
 SIXPACK_HOST = 'http://localhost:5000'
 SIXPACK_TIMEOUT = 0.5
+
+# valid experiment_names must be lowercase, start with an alphanumeric and
+# contain alphanumerics, dashes and underscores
+VALID_EXPT_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$")
+
+# Valid alternative and kpi names
 VALID_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9\-_ ]*$", re.I)
 
 
@@ -42,7 +48,7 @@ class Session(object):
             self.client_id = client_id
 
     def participate(self, experiment_name, alternatives, force=None, traffic_fraction=1, prefetch=False):
-        if VALID_NAME_RE.match(experiment_name) is None:
+        if VALID_EXPT_NAME_RE.match(experiment_name) is None:
             raise ValueError('Bad experiment name')
 
         if len(alternatives) < 2:
@@ -72,7 +78,7 @@ class Session(object):
         return response
 
     def convert(self, experiment_name, kpi=None):
-        if VALID_NAME_RE.match(experiment_name) is None:
+        if VALID_EXPT_NAME_RE.match(experiment_name) is None:
             raise ValueError('Bad experiment name')
 
         params = {
