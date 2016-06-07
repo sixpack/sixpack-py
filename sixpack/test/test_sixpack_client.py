@@ -59,7 +59,7 @@ class TestSixpackClent(unittest.TestCase):
         session = sixpack.Session(client_id='zack111')
         self.assertEqual(session.client_id, 'zack111')
 
-    def test_failure_on_bad_experiment_name(self):
+    def test_failure_on_bad_experiment_name_participate(self):
         session = sixpack.Session('zack')
         with self.assertRaises(ValueError):
             session.participate('*********', ['1', '2'])
@@ -68,6 +68,16 @@ class TestSixpackClent(unittest.TestCase):
         session = sixpack.Session('zack')
         with self.assertRaises(ValueError):
             session.convert('(((((')
+
+    def test_failure_on_uppercase_expt_name_participate(self):
+        session = sixpack.Session('zack')
+        with self.assertRaises(ValueError):
+            session.participate('FooExperiment', ['1', '2'])
+
+    def test_failure_on_uppercase_expt_name_convert(self):
+        session = sixpack.Session('zack')
+        with self.assertRaises(ValueError):
+            session.convert('FooExperiment')
 
     def test_failure_on_bad_kpi_name_convert(self):
         session = sixpack.Session('zack')
