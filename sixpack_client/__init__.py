@@ -40,11 +40,11 @@ class Session(object):
             'ip_address': None,
         }
 
-        options = dict(default_options.items() + options.items())
+        options = list(dict(default_options.items()) + list(options.items()))
         self.host = options['host']
         self.timeout = options['timeout']
 
-        params = dict(default_params.items() + params.items())
+        params = list(dict(default_params.items()) + list(params.items()))
         self.user_agent = params['user_agent']
         self.ip_address = params['ip_address']
 
